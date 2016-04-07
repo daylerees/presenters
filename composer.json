@@ -1,0 +1,13 @@
+{
+  "autoload": {
+    "psr-4": {
+      "Rees\\Presenters\\": "src"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "require": {
+    "phpunit/phpunit": "^5.3"
+  }
+}
