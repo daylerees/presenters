@@ -6,9 +6,9 @@ if (!function_exists('when')) {
      *
      * @param mixed $conditions
      *
-     * @return \Rees\Presenters\Optional
+     * @return \Rees\Presenters\Embed
      */
     function when($conditions) {
-        return new \Rees\Presenters\Optional($conditions);
+        return new \Rees\Presenters\Embed($conditions);
     }
 }

@@ -20,11 +20,11 @@ abstract class Presenter
      *
      * @param mixed $conditions
      *
-     * @return \Rees\Presenters\Optional
+     * @return \Rees\Presenters\Embed
      */
     public function when($conditions)
     {
-        return new Optional($conditions);
+        return new Embed($conditions);
     }
 
     /**

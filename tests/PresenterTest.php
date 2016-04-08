@@ -59,6 +59,34 @@ class PresenterTest extends PHPUnit_Framework_TestCase
             'baz' => 'boo'
         ], $r);
     }
+
+    public function test_that_a_presenter_can_use_a_condition()
+    {
+        $p = new SixthPresenter();
+        $r = $p->getPresentedPayload();
+        $this->assertTrue(is_array($r));
+        $this->assertArrayHasKey('foo', $r);
+        $this->assertArrayHasKey('bar', $r);
+        $this->assertArrayNotHasKey('baz', $r);
+        $this->assertEquals([
+            'foo' => 'bar',
+            'bar' => 'baz'
+        ], $r);
+    }
+
+    public function test_that_a_presenter_can_use_a_closure_condition()
+    {
+        $p = new SeventhPresenter;
+        $r = $p->getPresentedPayload();
+        $this->assertTrue(is_array($r));
+        $this->assertArrayHasKey('foo', $r);
+        $this->assertArrayHasKey('bar', $r);
+        $this->assertArrayNotHasKey('baz', $r);
+        $this->assertEquals([
+            'foo' => 'bar',
+            'bar' => 'baz'
+        ], $r);
+    }
 }
 
 /**
@@ -109,4 +137,39 @@ class FifthPresenter extends \Rees\Presenters\Presenter
             'baz' => 'boo'
         ];
     }
+}
+
+class SixthPresenter extends \Rees\Presenters\Presenter
+{
+    public function present()
+    {
+        return [
+            'foo' => 'bar',
+            'bar' => $this->when(new TrueCondition)->embed('baz'),
+            'baz' => $this->when(new FalseCondition)->embed('boo')
+        ];
+    }
+}
+
+class SeventhPresenter extends \Rees\Presenters\Presenter
+{
+    public function present()
+    {
+        return [
+            'foo' => 'bar',
+            'bar' => $this->when(function () { return true; })->embed('baz'),
+            'baz' => $this->when(function () { return false; })->embed('boo'),
+        ];
+    }
+}
+
+
+class TrueCondition implements \Rees\Presenters\Condition
+{
+    public function check() { return true; }
+}
+
+class FalseCondition implements \Rees\Presenters\Condition
+{
+    public function check() { return false; }
 }

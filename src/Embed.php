@@ -7,7 +7,7 @@ namespace Rees\Presenters;
  *
  * @package \Rees\Presenters
  */
-class Optional
+class Embed
 {
     /**
      * Condition instances.
@@ -23,7 +23,7 @@ class Optional
      */
     public function __construct($conditions)
     {
-        $this->conditions =  (array) $conditions;
+        $this->conditions = is_array($conditions) ? $conditions : [$conditions];
     }
 
     /**
@@ -31,11 +31,13 @@ class Optional
      *
      * @param mixed $conditions
      *
-     * @return \Rees\Presenters\Optional
+     * @return \Rees\Presenters\Embed
      */
     public function when($conditions)
     {
-        $this->conditions = array_merge($this->conditions, (array) $conditions);
+        $conditions = is_array($conditions) ? $conditions : [$conditions];
+
+        $this->conditions = array_merge($this->conditions, $conditions);
 
         return $this;
     }
@@ -88,6 +90,12 @@ class Optional
             // If we've been handed a condition instance, we'll call the
             // check method to determine the result.
             if ($condition instanceof Condition && ! (bool) $condition->check()) {
+                return false;
+            }
+
+            // If we've been passed a callable, then we'll execute the callable and
+            // cast a boolean result as the condition.
+            if (is_callable($condition) && ! (bool) call_user_func($condition)) {
                 return false;
             }
         }
